@@ -7,7 +7,18 @@ resolve correctly.
 
 from src.models.base import Base
 from src.models.organization import Organization
+from src.models.product import Product
 from src.models.role import Role
+from src.models.stock_record import StockRecord
 from src.models.user import User
+from src.models.warehouse import Warehouse
 
-__all__ = ["Base", "Organization", "Role", "User"]
+__all__ = [
+    "Base",
+    "Organization",
+    "Product",
+    "Role",
+    "StockRecord",
+    "User",
+    "Warehouse",
+]
