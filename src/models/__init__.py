@@ -8,6 +8,7 @@ resolve correctly.
 from src.models.base import Base
 from src.models.organization import Organization
 from src.models.product import Product
+from src.models.reservation import Reservation, ReservationStatus
 from src.models.role import Role
 from src.models.stock_record import StockRecord
 from src.models.user import User
@@ -17,6 +18,8 @@ __all__ = [
     "Base",
     "Organization",
     "Product",
+    "Reservation",
+    "ReservationStatus",
     "Role",
     "StockRecord",
     "User",
