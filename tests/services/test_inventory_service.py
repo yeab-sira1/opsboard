@@ -80,6 +80,33 @@ def test_adjust_stock_cannot_go_below_zero(service: InventoryService) -> None:
     assert service.get_stock(product.id, warehouse.id) == 2
 
 
+def test_adjust_stock_creates_record_when_missing(
+    service: InventoryService,
+) -> None:
+    product = service.add_product(sku="SKU-1", name="Widget", unit="pcs")
+    warehouse = service.create_warehouse(
+        code="WH-1", name="Main", location="Berlin"
+    )
+
+    record = service.adjust_stock(product.id, warehouse.id, 4)
+    assert record.quantity == 4
+    assert service.get_stock(product.id, warehouse.id) == 4
+
+
+def test_stock_is_isolated_per_warehouse(service: InventoryService) -> None:
+    product = service.add_product(sku="SKU-1", name="Widget", unit="pcs")
+    wh1 = service.create_warehouse(code="WH-1", name="Main", location="Berlin")
+    wh2 = service.create_warehouse(
+        code="WH-2", name="Annex", location="Munich"
+    )
+
+    service.set_stock(product.id, wh1.id, 10)
+    service.set_stock(product.id, wh2.id, 2)
+
+    assert service.get_stock(product.id, wh1.id) == 10
+    assert service.get_stock(product.id, wh2.id) == 2
+
+
 def test_operations_require_existing_entities(
     service: InventoryService,
 ) -> None:
