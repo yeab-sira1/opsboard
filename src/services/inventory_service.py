@@ -90,8 +90,8 @@ class InventoryService:
         """Set the absolute on-hand quantity for a product/warehouse pair."""
         if quantity < 0:
             raise NegativeStockError(current=0, delta=quantity)
-        self._require_product(product_id)
-        self._require_warehouse(warehouse_id)
+        self.require_product(product_id)
+        self.require_warehouse(warehouse_id)
 
         record = self._stock.get_by_product_and_warehouse(
             product_id, warehouse_id
@@ -119,8 +119,8 @@ class InventoryService:
         ``delta`` may be negative to consume stock; the resulting quantity must
         remain non-negative.
         """
-        self._require_product(product_id)
-        self._require_warehouse(warehouse_id)
+        self.require_product(product_id)
+        self.require_warehouse(warehouse_id)
 
         record = self._stock.get_by_product_and_warehouse(
             product_id, warehouse_id
@@ -151,13 +151,15 @@ class InventoryService:
         )
         return record.quantity if record is not None else 0
 
-    def _require_product(self, product_id: uuid.UUID) -> Product:
+    def require_product(self, product_id: uuid.UUID) -> Product:
+        """Return the product or raise :class:`ProductNotFoundError`."""
         product = self._products.get(product_id)
         if product is None:
             raise ProductNotFoundError(product_id)
         return product
 
-    def _require_warehouse(self, warehouse_id: uuid.UUID) -> Warehouse:
+    def require_warehouse(self, warehouse_id: uuid.UUID) -> Warehouse:
+        """Return the warehouse or raise :class:`WarehouseNotFoundError`."""
         warehouse = self._warehouses.get(warehouse_id)
         if warehouse is None:
             raise WarehouseNotFoundError(warehouse_id)
