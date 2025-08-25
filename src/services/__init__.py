@@ -11,6 +11,17 @@ from src.services.inventory_service import (
     ProductNotFoundError,
     WarehouseNotFoundError,
 )
+from src.services.order_service import (
+    DuplicateOrderReferenceError,
+    EmptyOrderError,
+    InactiveReservationError,
+    InvalidOrderStateError,
+    OrderError,
+    OrderLine,
+    OrderNotFoundError,
+    OrderQuantityMismatchError,
+    OrderService,
+)
 from src.services.reservation_service import (
     InsufficientAvailableStockError,
     InvalidReservationQuantityError,
@@ -22,11 +33,20 @@ from src.services.reservation_service import (
 )
 
 __all__ = [
+    "DuplicateOrderReferenceError",
+    "EmptyOrderError",
+    "InactiveReservationError",
     "InsufficientAvailableStockError",
+    "InvalidOrderStateError",
     "InvalidReservationQuantityError",
     "InventoryError",
     "InventoryService",
     "NegativeStockError",
+    "OrderError",
+    "OrderLine",
+    "OrderNotFoundError",
+    "OrderQuantityMismatchError",
+    "OrderService",
     "ProductNotFoundError",
     "ReservationAlreadyFulfilledError",
     "ReservationAlreadyReleasedError",

@@ -101,7 +101,7 @@ class ReservationService:
 
     def release_reservation(self, reservation_id: uuid.UUID) -> Reservation:
         """Transition an active reservation to ``RELEASED``."""
-        reservation = self._require_reservation(reservation_id)
+        reservation = self.require_reservation(reservation_id)
         self._ensure_active(reservation)
         reservation.status = ReservationStatus.RELEASED
         self._session.flush()
@@ -109,7 +109,7 @@ class ReservationService:
 
     def fulfill_reservation(self, reservation_id: uuid.UUID) -> Reservation:
         """Transition an active reservation to ``FULFILLED``."""
-        reservation = self._require_reservation(reservation_id)
+        reservation = self.require_reservation(reservation_id)
         self._ensure_active(reservation)
         reservation.status = ReservationStatus.FULFILLED
         self._session.flush()
@@ -142,9 +142,10 @@ class ReservationService:
             product_id, warehouse_id
         )
 
-    def _require_reservation(
+    def require_reservation(
         self, reservation_id: uuid.UUID
     ) -> Reservation:
+        """Return the reservation or raise :class:`ReservationNotFoundError`."""
         reservation = self._reservations.get(reservation_id)
         if reservation is None:
             raise ReservationNotFoundError(reservation_id)
