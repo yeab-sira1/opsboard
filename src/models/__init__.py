@@ -6,6 +6,7 @@ resolve correctly.
 """
 
 from src.models.base import Base
+from src.models.daily_inventory_snapshot import DailyInventorySnapshot
 from src.models.order import Order, OrderStatus
 from src.models.order_item import OrderItem
 from src.models.organization import Organization
@@ -18,6 +19,7 @@ from src.models.warehouse import Warehouse
 
 __all__ = [
     "Base",
+    "DailyInventorySnapshot",
     "Order",
     "OrderItem",
     "OrderStatus",
