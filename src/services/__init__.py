@@ -4,6 +4,13 @@ Service modules coordinate repositories and models to implement opsboard's
 operational workflows.
 """
 
+from src.services.analytics_service import (
+    AnalyticsError,
+    AnalyticsService,
+    InventorySummaryRow,
+    SnapshotAlreadyExistsError,
+    SnapshotNotFoundError,
+)
 from src.services.inventory_service import (
     InventoryError,
     InventoryService,
@@ -33,6 +40,8 @@ from src.services.reservation_service import (
 )
 
 __all__ = [
+    "AnalyticsError",
+    "AnalyticsService",
     "DuplicateOrderReferenceError",
     "EmptyOrderError",
     "InactiveReservationError",
@@ -41,6 +50,7 @@ __all__ = [
     "InvalidReservationQuantityError",
     "InventoryError",
     "InventoryService",
+    "InventorySummaryRow",
     "NegativeStockError",
     "OrderError",
     "OrderLine",
@@ -53,5 +63,7 @@ __all__ = [
     "ReservationError",
     "ReservationNotFoundError",
     "ReservationService",
+    "SnapshotAlreadyExistsError",
+    "SnapshotNotFoundError",
     "WarehouseNotFoundError",
 ]
