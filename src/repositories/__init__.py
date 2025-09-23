@@ -6,6 +6,7 @@ from src.repositories.daily_inventory_snapshot_repository import (
 )
 from src.repositories.order_repository import OrderRepository
 from src.repositories.product_repository import ProductRepository
+from src.repositories.report_request_repository import ReportRequestRepository
 from src.repositories.reservation_repository import ReservationRepository
 from src.repositories.stock_record_repository import StockRecordRepository
 from src.repositories.warehouse_repository import WarehouseRepository
@@ -15,6 +16,7 @@ __all__ = [
     "DailyInventorySnapshotRepository",
     "OrderRepository",
     "ProductRepository",
+    "ReportRequestRepository",
     "ReservationRepository",
     "StockRecordRepository",
     "WarehouseRepository",
