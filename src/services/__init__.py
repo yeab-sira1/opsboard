@@ -11,6 +11,14 @@ from src.services.analytics_service import (
     SnapshotAlreadyExistsError,
     SnapshotNotFoundError,
 )
+from src.services.dashboard_service import (
+    DashboardService,
+    InventoryDashboard,
+    OrderDashboard,
+    ReservationDashboard,
+    SnapshotDashboard,
+)
+from src.services.export_service import ExportService
 from src.services.inventory_service import (
     InventoryError,
     InventoryService,
@@ -42,16 +50,20 @@ from src.services.reservation_service import (
 __all__ = [
     "AnalyticsError",
     "AnalyticsService",
+    "DashboardService",
     "DuplicateOrderReferenceError",
     "EmptyOrderError",
+    "ExportService",
     "InactiveReservationError",
     "InsufficientAvailableStockError",
     "InvalidOrderStateError",
     "InvalidReservationQuantityError",
+    "InventoryDashboard",
     "InventoryError",
     "InventoryService",
     "InventorySummaryRow",
     "NegativeStockError",
+    "OrderDashboard",
     "OrderError",
     "OrderLine",
     "OrderNotFoundError",
@@ -60,10 +72,12 @@ __all__ = [
     "ProductNotFoundError",
     "ReservationAlreadyFulfilledError",
     "ReservationAlreadyReleasedError",
+    "ReservationDashboard",
     "ReservationError",
     "ReservationNotFoundError",
     "ReservationService",
     "SnapshotAlreadyExistsError",
+    "SnapshotDashboard",
     "SnapshotNotFoundError",
     "WarehouseNotFoundError",
 ]
