@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Enum as SAEnum, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models.base import Base, UUIDPrimaryKeyMixin, utcnow
+
+if TYPE_CHECKING:
+    from src.models.report_job import ReportJob
 
 
 class ReportType(enum.Enum):
@@ -34,6 +38,11 @@ class ReportRequest(UUIDPrimaryKeyMixin, Base):
     )
     requested_at: Mapped[datetime] = mapped_column(default=utcnow)
     parameters_json: Mapped[str] = mapped_column(Text, default="{}")
+
+    jobs: Mapped[list["ReportJob"]] = relationship(
+        back_populates="report_request",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self) -> str:
         return (
