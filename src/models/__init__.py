@@ -7,6 +7,7 @@ resolve correctly.
 
 from src.models.base import Base
 from src.models.daily_inventory_snapshot import DailyInventorySnapshot
+from src.models.domain_event import DomainEvent, DomainEventType
 from src.models.notification import Notification, NotificationStatus
 from src.models.order import Order, OrderStatus
 from src.models.order_item import OrderItem
@@ -16,6 +17,7 @@ from src.models.report_job import ReportJob, ReportJobStatus
 from src.models.report_request import ReportRequest, ReportType
 from src.models.reservation import Reservation, ReservationStatus
 from src.models.role import Role
+from src.models.scheduled_job import ScheduledJob, ScheduledJobStatus
 from src.models.stock_record import StockRecord
 from src.models.user import User
 from src.models.warehouse import Warehouse
@@ -23,6 +25,8 @@ from src.models.warehouse import Warehouse
 __all__ = [
     "Base",
     "DailyInventorySnapshot",
+    "DomainEvent",
+    "DomainEventType",
     "Notification",
     "NotificationStatus",
     "Order",
@@ -37,6 +41,8 @@ __all__ = [
     "Reservation",
     "ReservationStatus",
     "Role",
+    "ScheduledJob",
+    "ScheduledJobStatus",
     "StockRecord",
     "User",
     "Warehouse",
