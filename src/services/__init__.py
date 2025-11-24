@@ -18,6 +18,7 @@ from src.services.dashboard_service import (
     ReservationDashboard,
     SnapshotDashboard,
 )
+from src.services.event_service import EventService
 from src.services.export_service import ExportService
 from src.services.inventory_service import (
     InventoryError,
@@ -38,6 +39,13 @@ from src.services.report_job_service import (
     ReportJobNotFoundError,
     ReportJobService,
     ReportRequestNotFoundError,
+)
+from src.services.scheduler_service import (
+    InvalidScheduledJobStateError,
+    ScheduledJobNotFoundError,
+    SchedulerError,
+    SchedulerExecutionError,
+    SchedulerService,
 )
 from src.services.order_service import (
     DuplicateOrderReferenceError,
@@ -66,6 +74,7 @@ __all__ = [
     "DashboardService",
     "DuplicateOrderReferenceError",
     "EmptyOrderError",
+    "EventService",
     "ExportService",
     "InactiveReservationError",
     "InsufficientAvailableStockError",
@@ -73,6 +82,7 @@ __all__ = [
     "InvalidOrderStateError",
     "InvalidReportJobStateError",
     "InvalidReservationQuantityError",
+    "InvalidScheduledJobStateError",
     "InventoryDashboard",
     "InventoryError",
     "InventoryService",
@@ -98,6 +108,10 @@ __all__ = [
     "ReservationError",
     "ReservationNotFoundError",
     "ReservationService",
+    "ScheduledJobNotFoundError",
+    "SchedulerError",
+    "SchedulerExecutionError",
+    "SchedulerService",
     "SnapshotAlreadyExistsError",
     "SnapshotDashboard",
     "SnapshotNotFoundError",
