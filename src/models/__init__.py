@@ -6,6 +6,7 @@ resolve correctly.
 """
 
 from src.models.base import Base
+from src.models.cache_entry import CacheEntry
 from src.models.daily_inventory_snapshot import DailyInventorySnapshot
 from src.models.domain_event import DomainEvent, DomainEventType
 from src.models.notification import Notification, NotificationStatus
@@ -24,6 +25,7 @@ from src.models.warehouse import Warehouse
 
 __all__ = [
     "Base",
+    "CacheEntry",
     "DailyInventorySnapshot",
     "DomainEvent",
     "DomainEventType",
