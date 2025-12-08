@@ -1,6 +1,7 @@
 """Persistence helpers built on the repository pattern."""
 
 from src.repositories.base_repository import BaseRepository
+from src.repositories.cache_repository import CacheRepository
 from src.repositories.daily_inventory_snapshot_repository import (
     DailyInventorySnapshotRepository,
 )
@@ -17,6 +18,7 @@ from src.repositories.warehouse_repository import WarehouseRepository
 
 __all__ = [
     "BaseRepository",
+    "CacheRepository",
     "DailyInventorySnapshotRepository",
     "DomainEventRepository",
     "NotificationRepository",
