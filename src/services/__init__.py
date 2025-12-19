@@ -11,6 +11,11 @@ from src.services.analytics_service import (
     SnapshotAlreadyExistsError,
     SnapshotNotFoundError,
 )
+from src.services.cache_service import (
+    CacheError,
+    CacheSerializationError,
+    CacheService,
+)
 from src.services.dashboard_service import (
     DashboardService,
     InventoryDashboard,
@@ -71,6 +76,9 @@ from src.services.reservation_service import (
 __all__ = [
     "AnalyticsError",
     "AnalyticsService",
+    "CacheError",
+    "CacheSerializationError",
+    "CacheService",
     "DashboardService",
     "DuplicateOrderReferenceError",
     "EmptyOrderError",

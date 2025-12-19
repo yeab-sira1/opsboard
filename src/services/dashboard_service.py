@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date
 
@@ -11,6 +12,7 @@ from src.models.daily_inventory_snapshot import DailyInventorySnapshot
 from src.models.order import OrderStatus
 from src.models.reservation import ReservationStatus
 from src.services.analytics_service import AnalyticsService, InventorySummaryRow
+from src.services.cache_service import CacheService
 
 
 @dataclass(frozen=True)
@@ -55,8 +57,11 @@ class DashboardService:
     arranges the results and derives presentation-level totals.
     """
 
-    def __init__(self, session: Session) -> None:
+    def __init__(
+        self, session: Session, cache: CacheService | None = None
+    ) -> None:
         self._analytics = AnalyticsService(session)
+        self._cache = cache
 
     def get_inventory_dashboard(self) -> InventoryDashboard:
         """Return inventory rows with physical/reserved/available totals."""
@@ -69,16 +74,47 @@ class DashboardService:
         )
 
     def get_order_dashboard(self) -> OrderDashboard:
-        """Return order counts by status with the overall total."""
-        counts = self._analytics.get_order_summary()
+        """Return order counts by status with the overall total.
+
+        The status/count map is cached when a cache is configured.
+        """
+        counts = self._cached_counts(
+            "dashboard:order_counts",
+            lambda: {
+                status.value: count
+                for status, count in self._analytics.get_order_summary().items()
+            },
+        )
+        counts = {OrderStatus(value): count for value, count in counts.items()}
         return OrderDashboard(counts=counts, total_orders=sum(counts.values()))
 
     def get_reservation_dashboard(self) -> ReservationDashboard:
-        """Return reservation counts by status with the overall total."""
-        counts = self._analytics.get_reservation_summary()
+        """Return reservation counts by status with the overall total.
+
+        The status/count map is cached when a cache is configured.
+        """
+        counts = self._cached_counts(
+            "dashboard:reservation_counts",
+            lambda: {
+                status.value: count
+                for status, count in (
+                    self._analytics.get_reservation_summary().items()
+                )
+            },
+        )
+        counts = {
+            ReservationStatus(value): count for value, count in counts.items()
+        }
         return ReservationDashboard(
             counts=counts, total_reservations=sum(counts.values())
         )
+
+    def _cached_counts(
+        self, cache_key: str, builder: "Callable[[], dict[str, int]]"
+    ) -> dict[str, int]:
+        if self._cache is None:
+            return builder()
+        return self._cache.get_or_set(cache_key, builder)
 
     def get_snapshot_dashboard(
         self, snapshot_date: date
