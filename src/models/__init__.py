@@ -9,6 +9,7 @@ from src.models.base import Base
 from src.models.cache_entry import CacheEntry
 from src.models.daily_inventory_snapshot import DailyInventorySnapshot
 from src.models.domain_event import DomainEvent, DomainEventType
+from src.models.import_job import ImportJob, ImportJobStatus
 from src.models.notification import Notification, NotificationStatus
 from src.models.order import Order, OrderStatus
 from src.models.order_item import OrderItem
@@ -29,6 +30,8 @@ __all__ = [
     "DailyInventorySnapshot",
     "DomainEvent",
     "DomainEventType",
+    "ImportJob",
+    "ImportJobStatus",
     "Notification",
     "NotificationStatus",
     "Order",
