@@ -81,6 +81,14 @@ class InventoryService:
             Warehouse(code=code, name=name, location=location)
         )
 
+    def get_product_by_sku(self, sku: str) -> Product | None:
+        """Return the product with ``sku`` or ``None`` if absent."""
+        return self._products.get_by_sku(sku)
+
+    def get_warehouse_by_code(self, code: str) -> Warehouse | None:
+        """Return the warehouse with ``code`` or ``None`` if absent."""
+        return self._warehouses.get_by_code(code)
+
     def set_stock(
         self,
         product_id: uuid.UUID,

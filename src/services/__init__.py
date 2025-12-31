@@ -25,6 +25,15 @@ from src.services.dashboard_service import (
 )
 from src.services.event_service import EventService
 from src.services.export_service import ExportService
+from src.services.import_service import (
+    BulkImportError,
+    ImportService,
+    InvalidImportQuantityError,
+    MalformedCsvError,
+    StockImportRow,
+    UnknownProductError,
+    UnknownWarehouseError,
+)
 from src.services.inventory_service import (
     InventoryError,
     InventoryService,
@@ -76,6 +85,7 @@ from src.services.reservation_service import (
 __all__ = [
     "AnalyticsError",
     "AnalyticsService",
+    "BulkImportError",
     "CacheError",
     "CacheSerializationError",
     "CacheService",
@@ -84,8 +94,10 @@ __all__ = [
     "EmptyOrderError",
     "EventService",
     "ExportService",
+    "ImportService",
     "InactiveReservationError",
     "InsufficientAvailableStockError",
+    "InvalidImportQuantityError",
     "InvalidNotificationStateError",
     "InvalidOrderStateError",
     "InvalidReportJobStateError",
@@ -95,6 +107,7 @@ __all__ = [
     "InventoryError",
     "InventoryService",
     "InventorySummaryRow",
+    "MalformedCsvError",
     "NegativeStockError",
     "NotificationError",
     "NotificationNotFoundError",
@@ -123,5 +136,8 @@ __all__ = [
     "SnapshotAlreadyExistsError",
     "SnapshotDashboard",
     "SnapshotNotFoundError",
+    "StockImportRow",
+    "UnknownProductError",
+    "UnknownWarehouseError",
     "WarehouseNotFoundError",
 ]
