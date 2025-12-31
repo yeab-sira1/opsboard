@@ -6,6 +6,7 @@ from src.repositories.daily_inventory_snapshot_repository import (
     DailyInventorySnapshotRepository,
 )
 from src.repositories.domain_event_repository import DomainEventRepository
+from src.repositories.import_job_repository import ImportJobRepository
 from src.repositories.notification_repository import NotificationRepository
 from src.repositories.order_repository import OrderRepository
 from src.repositories.product_repository import ProductRepository
@@ -21,6 +22,7 @@ __all__ = [
     "CacheRepository",
     "DailyInventorySnapshotRepository",
     "DomainEventRepository",
+    "ImportJobRepository",
     "NotificationRepository",
     "OrderRepository",
     "ProductRepository",
