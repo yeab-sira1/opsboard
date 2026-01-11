@@ -175,6 +175,10 @@ class OrderService:
         """Return all orders in the given ``status``."""
         return self._orders.get_by_status(status)
 
+    def get_all_orders(self) -> list[Order]:
+        """Return all orders."""
+        return self._orders.list()
+
     def _require_order(self, order_id: uuid.UUID) -> Order:
         order = self._orders.get(order_id)
         if order is None:

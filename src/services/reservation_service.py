@@ -142,6 +142,10 @@ class ReservationService:
             product_id, warehouse_id
         )
 
+    def get_all_reservations(self) -> list[Reservation]:
+        """Return all reservations."""
+        return self._reservations.list()
+
     def require_reservation(
         self, reservation_id: uuid.UUID
     ) -> Reservation:
