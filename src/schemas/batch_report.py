@@ -1,13 +1,9 @@
-"""Search and batch report schemas."""
+"""Batch report schemas."""
 
 from src.schemas.batch_report_request import BatchReportRequest
 from src.schemas.batch_report_result import BatchReportResult
-from src.schemas.filter_request import FilterRequest
-from src.schemas.filter_result import FilterResult
 
 __all__ = [
     "BatchReportRequest",
     "BatchReportResult",
-    "FilterRequest",
-    "FilterResult",
 ]

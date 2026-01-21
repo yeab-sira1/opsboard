@@ -15,6 +15,7 @@ from src.models.order import Order, OrderStatus
 from src.models.order_item import OrderItem
 from src.models.organization import Organization
 from src.models.product import Product
+from src.models.report_bundle import ReportBundle
 from src.models.report_job import ReportJob, ReportJobStatus
 from src.models.report_request import ReportRequest, ReportType
 from src.models.reservation import Reservation, ReservationStatus
@@ -39,6 +40,7 @@ __all__ = [
     "OrderStatus",
     "Organization",
     "Product",
+    "ReportBundle",
     "ReportJob",
     "ReportJobStatus",
     "ReportRequest",
