@@ -49,14 +49,8 @@ class SearchService:
             spec,
             lambda order: (
                 spec.matches_order_status(order.status)
-                and (
-                    not spec._search_text
-                    or spec.matches_text(order.reference or "")
-                )
-                and (
-                    not spec._date_range
-                    or spec.matches_date(order.created_at.date())
-                )
+                and spec.matches_text(order.reference or "")
+                and spec.matches_date(order.created_at.date())
             ),
         )
 
@@ -99,14 +93,8 @@ class SearchService:
             spec,
             lambda res: (
                 spec.matches_reservation_status(res.status)
-                and (
-                    not spec._search_text
-                    or spec.matches_text(res.order_reference or "")
-                )
-                and (
-                    not spec._date_range
-                    or spec.matches_date(res.created_at.date())
-                )
+                and spec.matches_text(res.reference or "")
+                and spec.matches_date(res.created_at.date())
             ),
         )
 
