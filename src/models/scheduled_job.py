@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Enum as SAEnum, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
+
+if TYPE_CHECKING:
+    from src.models.retry_attempt import RetryAttempt
 
 
 class ScheduledJobStatus(enum.Enum):
@@ -37,6 +41,11 @@ class ScheduledJob(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     )
     completed_at: Mapped[datetime | None] = mapped_column(default=None)
     error_message: Mapped[str | None] = mapped_column(Text, default=None)
+
+    retry_attempts: Mapped[list["RetryAttempt"]] = relationship(
+        back_populates="scheduled_job",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self) -> str:
         return (

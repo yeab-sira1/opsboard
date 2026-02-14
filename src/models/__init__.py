@@ -19,6 +19,8 @@ from src.models.report_bundle import ReportBundle
 from src.models.report_job import ReportJob, ReportJobStatus
 from src.models.report_request import ReportRequest, ReportType
 from src.models.reservation import Reservation, ReservationStatus
+from src.models.retry_attempt import RetryAttempt
+from src.models.retry_policy import RetryPolicy, RetryStrategy
 from src.models.role import Role
 from src.models.scheduled_job import ScheduledJob, ScheduledJobStatus
 from src.models.stock_record import StockRecord
@@ -47,6 +49,9 @@ __all__ = [
     "ReportType",
     "Reservation",
     "ReservationStatus",
+    "RetryAttempt",
+    "RetryPolicy",
+    "RetryStrategy",
     "Role",
     "ScheduledJob",
     "ScheduledJobStatus",
