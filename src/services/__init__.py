@@ -61,6 +61,12 @@ from src.services.scheduler_service import (
     SchedulerExecutionError,
     SchedulerService,
 )
+from src.services.backoff_service import BackoffService
+from src.services.retry_service import (
+    RetryError,
+    RetryExhaustedError,
+    RetryService,
+)
 from src.services.order_service import (
     DuplicateOrderReferenceError,
     EmptyOrderError,
@@ -85,6 +91,7 @@ from src.services.reservation_service import (
 __all__ = [
     "AnalyticsError",
     "AnalyticsService",
+    "BackoffService",
     "BulkImportError",
     "CacheError",
     "CacheSerializationError",
@@ -129,6 +136,9 @@ __all__ = [
     "ReservationError",
     "ReservationNotFoundError",
     "ReservationService",
+    "RetryError",
+    "RetryExhaustedError",
+    "RetryService",
     "ScheduledJobNotFoundError",
     "SchedulerError",
     "SchedulerExecutionError",

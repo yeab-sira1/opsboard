@@ -19,6 +19,8 @@ class DomainEventType(enum.Enum):
     NOTIFICATION_SENT = "NOTIFICATION_SENT"
     STOCK_IMPORTED = "STOCK_IMPORTED"
     STOCK_IMPORT_FAILED = "STOCK_IMPORT_FAILED"
+    RETRY_SUCCEEDED = "RETRY_SUCCEEDED"
+    RETRY_FAILED = "RETRY_FAILED"
 
 
 class DomainEvent(UUIDPrimaryKeyMixin, TimestampMixin, Base):
