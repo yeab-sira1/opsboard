@@ -65,15 +65,9 @@ class RetryService:
             )
 
         attempt_number = len(prior) + 1
-        job = self._scheduler._require_job(scheduled_job_id)
 
         # Reset a previously-failed job so the scheduler will run it again.
-        if job.status is not ScheduledJobStatus.PENDING:
-            job.status = ScheduledJobStatus.PENDING
-            job.completed_at = None
-            job.error_message = None
-            self._session.flush()
-
+        job = self._scheduler.reset_for_retry(scheduled_job_id)
         self._scheduler.run_job(job.id)
         succeeded = job.status is ScheduledJobStatus.COMPLETED
 

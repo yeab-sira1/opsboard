@@ -122,6 +122,24 @@ class SchedulerService:
         """Return all scheduled jobs in the given ``status``."""
         return self._jobs.get_by_status(status)
 
+    def get_job(self, job_id: uuid.UUID) -> ScheduledJob:
+        """Return the scheduled job or raise :class:`ScheduledJobNotFoundError`."""
+        return self._require_job(job_id)
+
+    def reset_for_retry(self, job_id: uuid.UUID) -> ScheduledJob:
+        """Return a job to ``PENDING`` so it can be executed again.
+
+        Clears the completion time and error from a prior run. A job already in
+        ``PENDING`` is returned unchanged.
+        """
+        job = self._require_job(job_id)
+        if job.status is not ScheduledJobStatus.PENDING:
+            job.status = ScheduledJobStatus.PENDING
+            job.completed_at = None
+            job.error_message = None
+            self._session.flush()
+        return job
+
     def _execute(self, job: ScheduledJob) -> None:
         """Run pending report jobs and deliver notifications, with events."""
         if not job.job_name.strip():
