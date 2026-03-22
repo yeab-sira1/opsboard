@@ -11,6 +11,9 @@ from src.models.daily_inventory_snapshot import DailyInventorySnapshot
 from src.models.domain_event import DomainEvent, DomainEventType
 from src.models.import_job import ImportJob, ImportJobStatus
 from src.models.notification import Notification, NotificationStatus
+from src.models.notification_category import NotificationCategory
+from src.models.notification_preference import NotificationPreference
+from src.models.notification_template import NotificationTemplate
 from src.models.order import Order, OrderStatus
 from src.models.order_item import OrderItem
 from src.models.organization import Organization
@@ -36,7 +39,10 @@ __all__ = [
     "ImportJob",
     "ImportJobStatus",
     "Notification",
+    "NotificationCategory",
+    "NotificationPreference",
     "NotificationStatus",
+    "NotificationTemplate",
     "Order",
     "OrderItem",
     "OrderStatus",

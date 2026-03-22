@@ -7,7 +7,16 @@ from src.repositories.daily_inventory_snapshot_repository import (
 )
 from src.repositories.domain_event_repository import DomainEventRepository
 from src.repositories.import_job_repository import ImportJobRepository
+from src.repositories.notification_category_repository import (
+    NotificationCategoryRepository,
+)
+from src.repositories.notification_preference_repository import (
+    NotificationPreferenceRepository,
+)
 from src.repositories.notification_repository import NotificationRepository
+from src.repositories.notification_template_repository import (
+    NotificationTemplateRepository,
+)
 from src.repositories.order_repository import OrderRepository
 from src.repositories.product_repository import ProductRepository
 from src.repositories.report_job_repository import ReportJobRepository
@@ -24,7 +33,10 @@ __all__ = [
     "DailyInventorySnapshotRepository",
     "DomainEventRepository",
     "ImportJobRepository",
+    "NotificationCategoryRepository",
+    "NotificationPreferenceRepository",
     "NotificationRepository",
+    "NotificationTemplateRepository",
     "OrderRepository",
     "ProductRepository",
     "ReportJobRepository",
