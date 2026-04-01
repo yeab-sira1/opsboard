@@ -6,6 +6,7 @@ resolve correctly.
 """
 
 from src.models.base import Base
+from src.models.audit_entry import AuditEntry
 from src.models.cache_entry import CacheEntry
 from src.models.daily_inventory_snapshot import DailyInventorySnapshot
 from src.models.domain_event import DomainEvent, DomainEventType
@@ -29,9 +30,11 @@ from src.models.scheduled_job import ScheduledJob, ScheduledJobStatus
 from src.models.stock_record import StockRecord
 from src.models.user import User
 from src.models.warehouse import Warehouse
+from src.models.workflow_execution import WorkflowExecution, WorkflowStatus
 
 __all__ = [
     "Base",
+    "AuditEntry",
     "CacheEntry",
     "DailyInventorySnapshot",
     "DomainEvent",
@@ -64,4 +67,6 @@ __all__ = [
     "StockRecord",
     "User",
     "Warehouse",
+    "WorkflowExecution",
+    "WorkflowStatus",
 ]

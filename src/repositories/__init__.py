@@ -1,6 +1,7 @@
 """Persistence helpers built on the repository pattern."""
 
 from src.repositories.base_repository import BaseRepository
+from src.repositories.audit_entry_repository import AuditEntryRepository
 from src.repositories.cache_repository import CacheRepository
 from src.repositories.daily_inventory_snapshot_repository import (
     DailyInventorySnapshotRepository,
@@ -26,9 +27,13 @@ from src.repositories.retry_attempt_repository import RetryAttemptRepository
 from src.repositories.scheduled_job_repository import ScheduledJobRepository
 from src.repositories.stock_record_repository import StockRecordRepository
 from src.repositories.warehouse_repository import WarehouseRepository
+from src.repositories.workflow_execution_repository import (
+    WorkflowExecutionRepository,
+)
 
 __all__ = [
     "BaseRepository",
+    "AuditEntryRepository",
     "CacheRepository",
     "DailyInventorySnapshotRepository",
     "DomainEventRepository",
@@ -46,4 +51,5 @@ __all__ = [
     "ScheduledJobRepository",
     "StockRecordRepository",
     "WarehouseRepository",
+    "WorkflowExecutionRepository",
 ]
