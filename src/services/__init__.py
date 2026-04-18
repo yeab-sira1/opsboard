@@ -11,6 +11,7 @@ from src.services.analytics_service import (
     SnapshotAlreadyExistsError,
     SnapshotNotFoundError,
 )
+from src.services.audit_service import AuditService
 from src.services.cache_service import (
     CacheError,
     CacheSerializationError,
@@ -87,10 +88,12 @@ from src.services.reservation_service import (
     ReservationNotFoundError,
     ReservationService,
 )
+from src.services.workflow_service import WorkflowError, WorkflowService
 
 __all__ = [
     "AnalyticsError",
     "AnalyticsService",
+    "AuditService",
     "BackoffService",
     "BulkImportError",
     "CacheError",
@@ -150,4 +153,6 @@ __all__ = [
     "UnknownProductError",
     "UnknownWarehouseError",
     "WarehouseNotFoundError",
+    "WorkflowError",
+    "WorkflowService",
 ]
