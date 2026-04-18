@@ -93,3 +93,22 @@ def test_query_without_filters_returns_all(audit: AuditService) -> None:
 
     results = audit.query_audit(AuditQuery())
     assert len(results) == 2
+
+
+def test_record_change_with_context_on_new_state(audit: AuditService) -> None:
+    context = AuditContext(actor="bob", reason="bump")
+    entry = audit.record_change(
+        "Order", "1", {"status": "A"}, {"status": "B"}, context=context
+    )
+    # Context rides on the resulting state for a change, not the old one.
+    assert "_context" not in json.loads(entry.old_state_json)
+    assert json.loads(entry.new_state_json)["_context"]["actor"] == "bob"
+
+
+def test_non_serializable_state_is_stringified(audit: AuditService) -> None:
+    import uuid
+
+    entity_id = uuid.uuid4()
+    entry = audit.record_creation("Order", "1", {"id": entity_id})
+    # The UUID is coerced via ``default=str`` rather than raising.
+    assert json.loads(entry.new_state_json)["id"] == str(entity_id)

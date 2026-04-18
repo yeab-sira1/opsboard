@@ -191,6 +191,26 @@ class TestSnapshotWorkflow:
         assert result.steps[-1].step_name == "analytics"
         assert not result.steps[-1].successful
 
+    def test_notifications_step_optional(
+        self,
+        session: Session,
+        inventory: InventoryService,
+        workflows: WorkflowService,
+    ) -> None:
+        _seed_catalog(inventory)
+        result = workflows.execute_snapshot_workflow(
+            WorkflowRequest("snapshot", send_notifications=True),
+            csv_string=_valid_csv(),
+            source_name="feed",
+            snapshot_date=date(2026, 1, 1),
+        )
+        assert result.successful
+        assert [s.step_name for s in result.steps][-1] == "notifications"
+        sent = NotificationService(session).get_notifications_by_status(
+            NotificationStatus.SENT
+        )
+        assert len(sent) == 1
+
 
 class TestWorkflowAuditTrail:
     def test_workflow_records_audit_entries(
