@@ -49,3 +49,13 @@ def test_backoff_config_validation_and_repr() -> None:
     with pytest.raises(ValueError):
         BackoffConfig(RetryStrategy.LINEAR, -5)
     assert "LINEAR" in repr(BackoffConfig(RetryStrategy.LINEAR, 5))
+
+
+def test_backoff_config_used_in_calculate_delay() -> None:
+    """BackoffConfig value object drives BackoffService.calculate_delay_from_config."""
+    from src.services.backoff_service import BackoffService
+    svc = BackoffService()
+    config = BackoffConfig(RetryStrategy.EXPONENTIAL, 2)
+    assert svc.calculate_delay_from_config(config, 1) == 2   # 2 * 2^0 = 2
+    assert svc.calculate_delay_from_config(config, 2) == 4   # 2 * 2^1 = 4
+    assert svc.calculate_delay_from_config(config, 3) == 8   # 2 * 2^2 = 8

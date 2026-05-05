@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from src.models.retry_policy import RetryStrategy
+from src.value_objects.backoff_config import BackoffConfig
 
 
 class BackoffService:
@@ -34,3 +35,11 @@ class BackoffService:
         if strategy is RetryStrategy.LINEAR:
             return base_delay_seconds * attempt
         return base_delay_seconds * (2 ** (attempt - 1))
+
+    def calculate_delay_from_config(
+        self,
+        config: BackoffConfig,
+        attempt: int,
+    ) -> int:
+        """Return the delay using a :class:`BackoffConfig` value object."""
+        return self.calculate_delay(config.strategy, config.base_delay_seconds, attempt)

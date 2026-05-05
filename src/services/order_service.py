@@ -8,10 +8,12 @@ from typing import NamedTuple
 
 from sqlalchemy.orm import Session
 
+from src.models.domain_event import DomainEventType
 from src.models.order import Order, OrderStatus
 from src.models.order_item import OrderItem
 from src.models.reservation import ReservationStatus
 from src.repositories import OrderRepository
+from src.services.event_service import EventService
 from src.services.reservation_service import ReservationService
 
 
@@ -98,6 +100,7 @@ class OrderService:
         self._session = session
         self._orders = OrderRepository(session)
         self._reservations = ReservationService(session)
+        self._events = EventService(session)
 
     def create_order(
         self, reference: str, lines: Sequence[OrderLine]
@@ -150,6 +153,10 @@ class OrderService:
             self._reservations.fulfill_reservation(item.reservation_id)
         order.status = OrderStatus.COMPLETED
         self._session.flush()
+        self._events.record_event(
+            DomainEventType.ORDER_COMPLETED,
+            {"order_id": str(order.id), "reference": order.reference},
+        )
         return order
 
     def cancel_order(self, order_id: uuid.UUID) -> Order:
@@ -165,6 +172,10 @@ class OrderService:
             self._reservations.release_reservation(item.reservation_id)
         order.status = OrderStatus.CANCELLED
         self._session.flush()
+        self._events.record_event(
+            DomainEventType.ORDER_CANCELLED,
+            {"order_id": str(order.id), "reference": order.reference},
+        )
         return order
 
     def get_order(self, order_id: uuid.UUID) -> Order:

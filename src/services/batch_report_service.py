@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from sqlalchemy.orm import Session
+
+from src.models.report_bundle import ReportBundle
+from src.repositories import ReportBundleRepository
 from src.schemas import BatchReportRequest, BatchReportResult
 from src.services import (
     AnalyticsService,
@@ -10,20 +14,33 @@ from src.services import (
 
 
 class BatchReportService:
-    """Generates multiple reports in a batch."""
+    """Generates multiple reports in a batch.
+
+    When a ``session`` is provided and ``bundle_name`` is passed to
+    :meth:`generate_batch_reports`, a :class:`ReportBundle` row is persisted
+    for the run.
+    """
 
     def __init__(
         self,
         dashboard_service: DashboardService,
         analytics_service: AnalyticsService,
+        session: Session | None = None,
     ) -> None:
         self._dashboard = dashboard_service
         self._analytics = analytics_service
+        self._session = session
 
     def generate_batch_reports(
-        self, request: BatchReportRequest
+        self,
+        request: BatchReportRequest,
+        bundle_name: str | None = None,
     ) -> BatchReportResult:
-        """Generate a batch of reports."""
+        """Generate a batch of reports.
+
+        If *bundle_name* is provided and a session was supplied at construction
+        time, a :class:`ReportBundle` row is persisted before returning.
+        """
         if request.is_empty():
             return BatchReportResult(results={}, generated_count=0, failed_count=0)
 
@@ -47,6 +64,10 @@ class BatchReportService:
             except Exception as e:
                 results[item.report_type] = {"error": str(e)}
                 failed_count += 1
+
+        if bundle_name is not None and self._session is not None:
+            repo = ReportBundleRepository(self._session)
+            repo.add(ReportBundle(bundle_name=bundle_name))
 
         return BatchReportResult(
             results=results,

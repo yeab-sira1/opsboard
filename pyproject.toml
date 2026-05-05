@@ -9,6 +9,13 @@ dependencies = [
     "pydantic>=2.7.0",
 ]
 
+[[project.authors]]
+name = "OpsBoard Team"
+email = "ops-eng@internal.example.com"
+
+[project.urls]
+Repository = "https://github.com/internal/opsboard"
+
 [dependency-groups]
 dev = [
     "pytest>=8.2.0",
@@ -22,3 +29,15 @@ package = false
 pythonpath = ["."]
 testpaths = ["tests"]
 addopts = "-q --cov=src --cov-report=term-missing"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+ignore_missing_imports = true

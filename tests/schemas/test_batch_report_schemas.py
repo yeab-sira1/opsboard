@@ -85,3 +85,14 @@ class TestBatchReportResult:
             failed_count=3,
         )
         assert result.total_count == 8
+
+
+class TestBatchReportModuleReexport:
+    def test_re_export_module_importable(self) -> None:
+        """src.schemas.batch_report re-exports BatchReportRequest and BatchReportResult."""
+        from src.schemas.batch_report import (
+            BatchReportRequest as Req,
+            BatchReportResult as Res,
+        )
+        assert Req is BatchReportRequest
+        assert Res is BatchReportResult

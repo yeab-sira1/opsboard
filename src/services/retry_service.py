@@ -11,8 +11,10 @@ from src.models.base import utcnow
 from src.models.domain_event import DomainEventType
 from src.models.retry_attempt import RetryAttempt
 from src.models.scheduled_job import ScheduledJobStatus
-from src.repositories import RetryAttemptRepository
-from src.value_objects import RetryConfig
+from src.repositories import RetryAttemptRepository, RetryPolicyRepository
+from src.schemas.retry_request import RetryRequest
+from src.schemas.retry_result import RetryResult
+from src.value_objects import BackoffConfig, RetryConfig
 from src.services.backoff_service import BackoffService
 from src.services.event_service import EventService
 from src.services.scheduler_service import SchedulerService
@@ -34,6 +36,14 @@ class RetryExhaustedError(RetryError):
         self.max_attempts = max_attempts
 
 
+class RetryPolicyNotFoundError(RetryError):
+    """Raised when a referenced retry policy does not exist."""
+
+    def __init__(self, policy_id: uuid.UUID) -> None:
+        super().__init__(f"Retry policy not found: {policy_id}")
+        self.policy_id = policy_id
+
+
 class RetryService:
     """Re-runs failed scheduled jobs under a bounded retry policy.
 
@@ -46,6 +56,7 @@ class RetryService:
     def __init__(self, session: Session) -> None:
         self._session = session
         self._attempts = RetryAttemptRepository(session)
+        self._policies = RetryPolicyRepository(session)
         self._scheduler = SchedulerService(session)
         self._backoff = BackoffService()
         self._events = EventService(session)
@@ -99,9 +110,11 @@ class RetryService:
         """Persist a retry attempt and emit the matching domain event."""
         next_retry_at = None
         if not successful and attempt_number < config.max_attempts:
-            delay = self._backoff.calculate_delay(
-                config.strategy, config.base_delay_seconds, attempt_number
+            backoff_config = BackoffConfig(
+                strategy=config.strategy,
+                base_delay_seconds=config.base_delay_seconds,
             )
+            delay = self._backoff.calculate_delay_from_config(backoff_config, attempt_number)
             next_retry_at = utcnow() + timedelta(seconds=delay)
 
         attempt = self._attempts.add(
@@ -133,3 +146,36 @@ class RetryService:
     ) -> list[RetryAttempt]:
         """Return all retry attempts for a scheduled job, oldest first."""
         return self._attempts.get_by_job(scheduled_job_id)
+
+    def retry_job_with_policy(self, request: RetryRequest) -> RetryResult:
+        """Retry a job using the named policy loaded from the database.
+
+        1. Loads the :class:`RetryPolicy` by ``request.policy_id``.
+        2. Raises :class:`RetryPolicyNotFoundError` if the policy is absent.
+        3. Builds a :class:`RetryConfig` from the policy.
+        4. Delegates to :meth:`retry_job` for the actual execution.
+        5. Maps the resulting :class:`RetryAttempt` to a :class:`RetryResult`.
+        """
+        policy = self._policies.get(request.policy_id)
+        if policy is None:
+            raise RetryPolicyNotFoundError(request.policy_id)
+
+        config = RetryConfig(
+            strategy=policy.strategy,
+            max_attempts=policy.max_attempts,
+            base_delay_seconds=policy.base_delay_seconds,
+        )
+
+        attempt = self.retry_job(request.scheduled_job_id, config)
+
+        prior_count = len(self._attempts.get_by_job(request.scheduled_job_id))
+        exhausted = not attempt.successful and prior_count >= config.max_attempts
+
+        return RetryResult(
+            scheduled_job_id=request.scheduled_job_id,
+            attempt_number=attempt.attempt_number,
+            successful=attempt.successful,
+            exhausted=exhausted,
+            next_retry_at=attempt.next_retry_at,
+            error_message=attempt.error_message,
+        )

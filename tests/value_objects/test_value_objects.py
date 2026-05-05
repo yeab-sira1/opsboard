@@ -62,6 +62,22 @@ class TestSortSpec:
         assert spec1 == spec2
         assert spec1 != spec3
 
+    def test_not_equal_to_different_type(self) -> None:
+        spec = SortSpec("name")
+        assert spec.__eq__("not-a-spec") is NotImplemented
+
+    def test_repr_ascending(self) -> None:
+        spec = SortSpec("price", ascending=True)
+        r = repr(spec)
+        assert "price" in r
+        assert "ASC" in r
+
+    def test_repr_descending(self) -> None:
+        spec = SortSpec("price", ascending=False)
+        r = repr(spec)
+        assert "price" in r
+        assert "DESC" in r
+
 
 class TestPagination:
     def test_valid_pagination(self) -> None:

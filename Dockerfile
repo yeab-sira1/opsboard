@@ -1,22 +1,28 @@
-# Container image for the opsboard test suite (AfterQuery submission).
-#
-# Builds on a pinned slim Python base, installs a pinned uv, syncs the
-# locked dependencies, and runs the test suite by default.
+# Test runner image for the OpsBoard test suite.
 
-FROM python:3.12.8-slim
+FROM python:3.12-slim
+
+LABEL org.opencontainers.image.description="OpsBoard test suite"
 
 WORKDIR /app
 
-# Install a pinned uv. pip ships with the base image, so uv is installed
-# directly from PyPI rather than via a network bootstrap script.
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install a pinned uv.
 RUN pip install --no-cache-dir uv==0.7.21
 
-# Copy the full repository (including uv.lock and the .git directory, which
-# AfterQuery relies on) into the build context.
+# Copy dependency manifests first so that the layer is cached independently
+# from source changes.
+COPY pyproject.toml uv.lock ./
+
+# Install locked dependencies without installing the project itself.
+RUN uv sync --frozen --no-install-project
+
+# Copy the full source tree (including the project package).
 COPY . .
 
-# Install the locked dependencies, including the dev group used by pytest.
+# Install the project itself now that its source is present.
 RUN uv sync --frozen
 
-# Run the test suite by default.
 CMD ["uv", "run", "pytest"]

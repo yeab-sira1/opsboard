@@ -66,6 +66,7 @@ from src.services.backoff_service import BackoffService
 from src.services.retry_service import (
     RetryError,
     RetryExhaustedError,
+    RetryPolicyNotFoundError,
     RetryService,
 )
 from src.services.order_service import (
@@ -88,13 +89,22 @@ from src.services.reservation_service import (
     ReservationNotFoundError,
     ReservationService,
 )
+from src.services.template_rendering_service import (
+    TemplateNotFoundError,
+    TemplateRenderingError,
+    TemplateRenderingService,
+)
 from src.services.workflow_service import WorkflowError, WorkflowService
+from src.services.batch_report_service import BatchReportService
+from src.services.batch_export_service import BatchExportService
 
 __all__ = [
     "AnalyticsError",
     "AnalyticsService",
     "AuditService",
     "BackoffService",
+    "BatchExportService",
+    "BatchReportService",
     "BulkImportError",
     "CacheError",
     "CacheSerializationError",
@@ -141,6 +151,7 @@ __all__ = [
     "ReservationService",
     "RetryError",
     "RetryExhaustedError",
+    "RetryPolicyNotFoundError",
     "RetryService",
     "ScheduledJobNotFoundError",
     "SchedulerError",
@@ -150,6 +161,9 @@ __all__ = [
     "SnapshotDashboard",
     "SnapshotNotFoundError",
     "StockImportRow",
+    "TemplateNotFoundError",
+    "TemplateRenderingError",
+    "TemplateRenderingService",
     "UnknownProductError",
     "UnknownWarehouseError",
     "WarehouseNotFoundError",
