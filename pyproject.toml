@@ -10,8 +10,8 @@ dependencies = [
 ]
 
 [[project.authors]]
-name = "OpsBoard Team"
-email = "ops-eng@internal.example.com"
+name = "yeabsira"
+email = "yeabsirayaba8@gmail.com"
 
 [project.urls]
 Repository = "https://github.com/internal/opsboard"
