@@ -10,15 +10,20 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from src.models.base import Base
-
-DEFAULT_DATABASE_URL = "sqlite+pysqlite:///:memory:"
+from src.config.setting import settings
 
 
 def create_database_engine(
-    url: str = DEFAULT_DATABASE_URL, *, echo: bool = False
+    url: str | None = None,
+    *,
+    echo: bool | None = None,
 ) -> Engine:
-    """Create a SQLAlchemy :class:`Engine` for the given database URL."""
-    return create_engine(url, echo=echo)
+    """Create a SQLAlchemy engine."""
+
+    return create_engine(
+        url or settings.database_url,
+        echo=settings.database_echo if echo is None else echo,
+    )
 
 
 def create_session_factory(engine: Engine) -> sessionmaker[Session]:
