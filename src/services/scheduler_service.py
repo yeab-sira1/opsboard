@@ -7,6 +7,9 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.lookup import NotFoundError
+from src.exceptions.state import InvalidStateError
 from src.models.base import utcnow
 from src.models.domain_event import DomainEventType
 from src.models.notification import NotificationStatus
@@ -18,11 +21,11 @@ from src.services.notification_service import NotificationService
 from src.services.report_job_service import ReportJobService
 
 
-class SchedulerError(Exception):
+class SchedulerError(OpsboardError):
     """Base class for scheduler-related errors."""
 
 
-class ScheduledJobNotFoundError(SchedulerError):
+class ScheduledJobNotFoundError(SchedulerError, NotFoundError):
     """Raised when a referenced scheduled job does not exist."""
 
     def __init__(self, job_id: uuid.UUID) -> None:
@@ -30,7 +33,7 @@ class ScheduledJobNotFoundError(SchedulerError):
         self.job_id = job_id
 
 
-class InvalidScheduledJobStateError(SchedulerError):
+class InvalidScheduledJobStateError(SchedulerError, InvalidStateError):
     """Raised when an operation is invalid for the job's current status."""
 
     def __init__(self, job_id: uuid.UUID, status: ScheduledJobStatus) -> None:

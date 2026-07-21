@@ -7,6 +7,7 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
 from src.models.base import utcnow
 from src.models.import_job import ImportJobStatus
 from src.models.workflow_execution import WorkflowExecution, WorkflowStatus
@@ -20,7 +21,7 @@ from src.services.notification_service import NotificationService
 from src.value_objects import WorkflowStep
 
 
-class WorkflowError(Exception):
+class WorkflowError(OpsboardError):
     """Base class for workflow-related errors."""
 
 

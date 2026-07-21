@@ -20,16 +20,20 @@ from src.models.notification import Notification
 from src.value_objects.template_context import TemplateContext
 
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.lookup import NotFoundError
+
+
 # ---------------------------------------------------------------------------
 # Errors
 # ---------------------------------------------------------------------------
 
 
-class TemplateRenderingError(Exception):
+class TemplateRenderingError(OpsboardError):
     """Base class for template rendering errors."""
 
 
-class TemplateNotFoundError(TemplateRenderingError):
+class TemplateNotFoundError(TemplateRenderingError, NotFoundError):
     """Raised when no template with the given name exists."""
 
     def __init__(self, template_name: str) -> None:

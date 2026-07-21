@@ -8,6 +8,10 @@ from typing import NamedTuple
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.lookup import NotFoundError
+from src.exceptions.state import ConflictError, InvalidStateError
+from src.exceptions.validation import ValidationError
 from src.models.domain_event import DomainEventType
 from src.models.order import Order, OrderStatus
 from src.models.order_item import OrderItem
@@ -24,11 +28,11 @@ class OrderLine(NamedTuple):
     quantity: int
 
 
-class OrderError(Exception):
+class OrderError(OpsboardError):
     """Base class for order-related errors."""
 
 
-class OrderNotFoundError(OrderError):
+class OrderNotFoundError(OrderError, NotFoundError):
     """Raised when a referenced order does not exist."""
 
     def __init__(self, order_id: uuid.UUID) -> None:
@@ -36,7 +40,7 @@ class OrderNotFoundError(OrderError):
         self.order_id = order_id
 
 
-class DuplicateOrderReferenceError(OrderError):
+class DuplicateOrderReferenceError(OrderError, ConflictError):
     """Raised when an order reference is already in use."""
 
     def __init__(self, reference: str) -> None:
@@ -44,7 +48,7 @@ class DuplicateOrderReferenceError(OrderError):
         self.reference = reference
 
 
-class EmptyOrderError(OrderError):
+class EmptyOrderError(OrderError, ValidationError):
     """Raised when an order is created without any line items."""
 
     def __init__(self, reference: str) -> None:
@@ -52,7 +56,7 @@ class EmptyOrderError(OrderError):
         self.reference = reference
 
 
-class InactiveReservationError(OrderError):
+class InactiveReservationError(OrderError, InvalidStateError):
     """Raised when an order references a non-active reservation."""
 
     def __init__(self, reservation_id: uuid.UUID) -> None:
@@ -60,7 +64,7 @@ class InactiveReservationError(OrderError):
         self.reservation_id = reservation_id
 
 
-class OrderQuantityMismatchError(OrderError):
+class OrderQuantityMismatchError(OrderError, ValidationError):
     """Raised when a line quantity does not match its reservation."""
 
     def __init__(
@@ -75,7 +79,7 @@ class OrderQuantityMismatchError(OrderError):
         self.requested = requested
 
 
-class InvalidOrderStateError(OrderError):
+class InvalidOrderStateError(OrderError, InvalidStateError):
     """Raised when an operation is invalid for the order's current state."""
 
     def __init__(self, order_id: uuid.UUID, status: OrderStatus) -> None:

@@ -9,6 +9,8 @@ from typing import NamedTuple
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.validation import ValidationError
 from src.models.domain_event import DomainEventType
 from src.models.import_job import ImportJob, ImportJobStatus
 from src.repositories import ImportJobRepository
@@ -26,15 +28,15 @@ class StockImportRow(NamedTuple):
     quantity: int
 
 
-class BulkImportError(Exception):
+class BulkImportError(OpsboardError):
     """Base class for recoverable import failures (captured on the job)."""
 
 
-class MalformedCsvError(BulkImportError):
+class MalformedCsvError(BulkImportError, ValidationError):
     """Raised when the CSV is structurally invalid."""
 
 
-class UnknownProductError(BulkImportError):
+class UnknownProductError(BulkImportError, ValidationError):
     """Raised when a row references an unknown product SKU."""
 
     def __init__(self, sku: str) -> None:
@@ -42,7 +44,7 @@ class UnknownProductError(BulkImportError):
         self.sku = sku
 
 
-class UnknownWarehouseError(BulkImportError):
+class UnknownWarehouseError(BulkImportError, ValidationError):
     """Raised when a row references an unknown warehouse code."""
 
     def __init__(self, warehouse_code: str) -> None:
@@ -50,7 +52,7 @@ class UnknownWarehouseError(BulkImportError):
         self.warehouse_code = warehouse_code
 
 
-class InvalidImportQuantityError(BulkImportError):
+class InvalidImportQuantityError(BulkImportError, ValidationError):
     """Raised when a row carries a negative quantity."""
 
     def __init__(self, quantity: int) -> None:

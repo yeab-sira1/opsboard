@@ -7,6 +7,9 @@ from datetime import timedelta
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.lookup import NotFoundError
+from src.exceptions.state import InvalidStateError
 from src.models.base import utcnow
 from src.models.domain_event import DomainEventType
 from src.models.retry_attempt import RetryAttempt
@@ -20,11 +23,11 @@ from src.services.event_service import EventService
 from src.services.scheduler_service import SchedulerService
 
 
-class RetryError(Exception):
+class RetryError(OpsboardError):
     """Base class for retry-related errors."""
 
 
-class RetryExhaustedError(RetryError):
+class RetryExhaustedError(RetryError, InvalidStateError):
     """Raised when a job has already used all of its allowed attempts."""
 
     def __init__(self, scheduled_job_id: uuid.UUID, max_attempts: int) -> None:
@@ -36,7 +39,7 @@ class RetryExhaustedError(RetryError):
         self.max_attempts = max_attempts
 
 
-class RetryPolicyNotFoundError(RetryError):
+class RetryPolicyNotFoundError(RetryError, NotFoundError):
     """Raised when a referenced retry policy does not exist."""
 
     def __init__(self, policy_id: uuid.UUID) -> None:

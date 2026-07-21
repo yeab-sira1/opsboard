@@ -6,16 +6,19 @@ import uuid
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.lookup import NotFoundError
+from src.exceptions.state import InvalidStateError
 from src.models.notification import Notification, NotificationStatus
 from src.repositories import NotificationRepository
 from src.models.base import utcnow
 
 
-class NotificationError(Exception):
+class NotificationError(OpsboardError):
     """Base class for notification-related errors."""
 
 
-class NotificationNotFoundError(NotificationError):
+class NotificationNotFoundError(NotificationError, NotFoundError):
     """Raised when a referenced notification does not exist."""
 
     def __init__(self, notification_id: uuid.UUID) -> None:
@@ -23,7 +26,7 @@ class NotificationNotFoundError(NotificationError):
         self.notification_id = notification_id
 
 
-class InvalidNotificationStateError(NotificationError):
+class InvalidNotificationStateError(NotificationError, InvalidStateError):
     """Raised when an operation is invalid for the current status."""
 
     def __init__(

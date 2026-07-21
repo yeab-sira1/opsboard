@@ -14,6 +14,8 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.validation import ValidationError
 from src.models.base import utcnow
 from src.models.cache_entry import CacheEntry
 from src.repositories import CacheRepository
@@ -31,11 +33,11 @@ def _as_aware_utc(value: datetime) -> datetime:
     return value
 
 
-class CacheError(Exception):
+class CacheError(OpsboardError):
     """Base class for cache-related errors."""
 
 
-class CacheSerializationError(CacheError):
+class CacheSerializationError(CacheError, ValidationError):
     """Raised when a value cannot be serialized to JSON."""
 
     def __init__(self, cache_key: str) -> None:

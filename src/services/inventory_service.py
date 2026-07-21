@@ -6,6 +6,9 @@ import uuid
 
 from sqlalchemy.orm import Session
 
+from src.config.logging import get_logger
+from src.exceptions import NotFoundError, ValidationError
+from src.exceptions.base import OpsboardError
 from src.models.product import Product
 from src.models.stock_record import StockRecord
 from src.models.warehouse import Warehouse
@@ -15,12 +18,14 @@ from src.repositories import (
     WarehouseRepository,
 )
 
+logger = get_logger(__name__)
 
-class InventoryError(Exception):
+
+class InventoryError(OpsboardError):
     """Base class for inventory-related errors."""
 
 
-class ProductNotFoundError(InventoryError):
+class ProductNotFoundError(InventoryError, NotFoundError):
     """Raised when a referenced product does not exist."""
 
     def __init__(self, product_id: uuid.UUID) -> None:
@@ -28,7 +33,7 @@ class ProductNotFoundError(InventoryError):
         self.product_id = product_id
 
 
-class WarehouseNotFoundError(InventoryError):
+class WarehouseNotFoundError(InventoryError, NotFoundError):
     """Raised when a referenced warehouse does not exist."""
 
     def __init__(self, warehouse_id: uuid.UUID) -> None:
@@ -36,7 +41,7 @@ class WarehouseNotFoundError(InventoryError):
         self.warehouse_id = warehouse_id
 
 
-class NegativeStockError(InventoryError):
+class NegativeStockError(InventoryError, ValidationError):
     """Raised when an operation would drive stock below zero."""
 
     def __init__(self, current: int, delta: int) -> None:
@@ -69,9 +74,11 @@ class InventoryService:
         description: str | None = None,
     ) -> Product:
         """Create and persist a new product."""
-        return self._products.add(
+        product = self._products.add(
             Product(sku=sku, name=name, unit=unit, description=description)
         )
+        logger.debug("Product created: sku=%s id=%s", sku, product.id)
+        return product
 
     def create_warehouse(
         self, code: str, name: str, location: str

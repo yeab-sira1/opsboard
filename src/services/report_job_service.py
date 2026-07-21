@@ -8,6 +8,9 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.lookup import NotFoundError
+from src.exceptions.state import InvalidStateError
 from src.models.base import utcnow
 from src.models.report_job import ReportJob, ReportJobStatus
 from src.models.report_request import ReportRequest, ReportType
@@ -17,11 +20,11 @@ from src.services.export_service import ExportService
 from src.services.notification_service import NotificationService
 
 
-class ReportJobError(Exception):
+class ReportJobError(OpsboardError):
     """Base class for report-job-related errors."""
 
 
-class ReportJobNotFoundError(ReportJobError):
+class ReportJobNotFoundError(ReportJobError, NotFoundError):
     """Raised when a referenced job does not exist."""
 
     def __init__(self, job_id: uuid.UUID) -> None:
@@ -29,7 +32,7 @@ class ReportJobNotFoundError(ReportJobError):
         self.job_id = job_id
 
 
-class ReportRequestNotFoundError(ReportJobError):
+class ReportRequestNotFoundError(ReportJobError, NotFoundError):
     """Raised when a job is created for a missing report request."""
 
     def __init__(self, report_request_id: uuid.UUID) -> None:
@@ -37,7 +40,7 @@ class ReportRequestNotFoundError(ReportJobError):
         self.report_request_id = report_request_id
 
 
-class InvalidReportJobStateError(ReportJobError):
+class InvalidReportJobStateError(ReportJobError, InvalidStateError):
     """Raised when an operation is invalid for the job's current status."""
 
     def __init__(self, job_id: uuid.UUID, status: ReportJobStatus) -> None:

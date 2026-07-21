@@ -8,14 +8,17 @@ from sqlalchemy.orm import Session
 
 from src.models.reservation import Reservation, ReservationStatus
 from src.repositories import ReservationRepository
+from src.exceptions import NotFoundError, ValidationError
+from src.exceptions.base import OpsboardError
+from src.exceptions.state import InvalidStateError
 from src.services.inventory_service import InventoryService
 
 
-class ReservationError(Exception):
+class ReservationError(OpsboardError):
     """Base class for reservation-related errors."""
 
 
-class ReservationNotFoundError(ReservationError):
+class ReservationNotFoundError(ReservationError, NotFoundError):
     """Raised when a referenced reservation does not exist."""
 
     def __init__(self, reservation_id: uuid.UUID) -> None:
@@ -23,7 +26,7 @@ class ReservationNotFoundError(ReservationError):
         self.reservation_id = reservation_id
 
 
-class ReservationAlreadyReleasedError(ReservationError):
+class ReservationAlreadyReleasedError(ReservationError, InvalidStateError):
     """Raised when releasing a reservation that is already released."""
 
     def __init__(self, reservation_id: uuid.UUID) -> None:
@@ -31,7 +34,7 @@ class ReservationAlreadyReleasedError(ReservationError):
         self.reservation_id = reservation_id
 
 
-class ReservationAlreadyFulfilledError(ReservationError):
+class ReservationAlreadyFulfilledError(ReservationError, InvalidStateError):
     """Raised when a reservation has already been fulfilled."""
 
     def __init__(self, reservation_id: uuid.UUID) -> None:
@@ -39,7 +42,7 @@ class ReservationAlreadyFulfilledError(ReservationError):
         self.reservation_id = reservation_id
 
 
-class InvalidReservationQuantityError(ReservationError):
+class InvalidReservationQuantityError(ReservationError, ValidationError):
     """Raised when a reservation quantity is not strictly positive."""
 
     def __init__(self, quantity: int) -> None:
@@ -47,7 +50,7 @@ class InvalidReservationQuantityError(ReservationError):
         self.quantity = quantity
 
 
-class InsufficientAvailableStockError(ReservationError):
+class InsufficientAvailableStockError(ReservationError, ValidationError):
     """Raised when a reservation exceeds the currently available stock."""
 
     def __init__(self, requested: int, available: int) -> None:

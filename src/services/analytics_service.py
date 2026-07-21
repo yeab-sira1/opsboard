@@ -8,6 +8,9 @@ from typing import NamedTuple
 
 from sqlalchemy.orm import Session
 
+from src.exceptions.base import OpsboardError
+from src.exceptions.lookup import NotFoundError
+from src.exceptions.state import ConflictError
 from src.models.daily_inventory_snapshot import DailyInventorySnapshot
 from src.models.order import OrderStatus
 from src.models.reservation import ReservationStatus
@@ -31,11 +34,11 @@ class InventorySummaryRow(NamedTuple):
     available_stock: int
 
 
-class AnalyticsError(Exception):
+class AnalyticsError(OpsboardError):
     """Base class for analytics-related errors."""
 
 
-class SnapshotAlreadyExistsError(AnalyticsError):
+class SnapshotAlreadyExistsError(AnalyticsError, ConflictError):
     """Raised when generating snapshots for a date that already has them."""
 
     def __init__(self, snapshot_date: date) -> None:
@@ -43,7 +46,7 @@ class SnapshotAlreadyExistsError(AnalyticsError):
         self.snapshot_date = snapshot_date
 
 
-class SnapshotNotFoundError(AnalyticsError):
+class SnapshotNotFoundError(AnalyticsError, NotFoundError):
     """Raised when a requested snapshot does not exist."""
 
     def __init__(
